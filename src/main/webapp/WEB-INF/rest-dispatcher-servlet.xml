@@ -12,25 +12,16 @@
         http://www.springframework.org/schema/util
         http://www.springframework.org/schema/util/spring-util.xsd">
 
-	<context:component-scan base-package="com.devcru.staylocatedapi.controllers" />
+	<context:component-scan base-package="com.devcru.arb.controllers" />
 
-	<!-- This locates the DATABASE_URL environment variable on Heroku and fetches 
-		the credentials. We do this to avoid hard-coding the credentials in the project 
-		repository. Note that this will completely break when deployed locally, so 
-		adding a local-only database.properties file may be in order. -->
-	<bean class="java.net.URI" id="dbUrl">
-		<constructor-arg value="#{systemEnvironment['DATABASE_URL']}" />
-	</bean>
-
-	<bean class="org.springframework.jdbc.datasource.DriverManagerDataSource"
-		id="dataSource">
-		<property name="url"
-			value="#{ 'jdbc:postgresql://' + @dbUrl.getHost() + ':' + @dbUrl.getPort() + @dbUrl.getPath() }" />
-		<property name="username" value="#{ @dbUrl.getUserInfo().split(':')[0] }" />
-		<property name="password" value="#{ @dbUrl.getUserInfo().split(':')[1] }" />
+	<!-- We can figure out what to do about this later, until then, hardcode for proof of concept -->
+	<bean class="org.springframework.jdbc.datasource.DriverManagerDataSource" id="dataSource">
+		<property name="url" value="jdbc:postgresql://ec2-54-83-51-0.compute-1.amazonaws.com:5432/dfgo7ef02bk96d" />
+		<property name="username" value="xgmznlyrlmspyb" />
+		<property name="password" value="vbitXXBDGmSJ3qo7e1LDy7r6T4" />
 	</bean>
 	
-	<bean id="userDao" class="com.devcru.staylocatedapi.dao.impl.UserDaoImpl">
+	<bean id="dao" class="com.devcru.arb.dao.impl.DaoImpl">
 		<property name="dataSource" ref ="dataSource" />
 	</bean>
 

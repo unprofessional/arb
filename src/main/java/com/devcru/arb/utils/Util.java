@@ -1,4 +1,4 @@
-package com.devcru.staylocatedapi.utils;
+package com.devcru.arb.utils;
 
 public class Util {
 	

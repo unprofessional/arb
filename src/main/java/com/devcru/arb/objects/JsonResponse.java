@@ -1,4 +1,4 @@
-package com.devcru.staylocatedapi.objects;
+package com.devcru.arb.objects;
 
 public class JsonResponse {
 

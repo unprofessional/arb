@@ -1,12 +1,12 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
-	<groupId>com.staylocatedapi</groupId>
-	<artifactId>staylocatedapi</artifactId>
+	<groupId>com.arb</groupId>
+	<artifactId>arb</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 	<packaging>war</packaging>
 
-	<name>staylocatedapi</name>
+	<name>arb</name>
 
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -113,38 +113,6 @@
 			<version>${spring.version}</version>
 		</dependency>
 
-		<!-- Spring Security -->
-		<dependency>
-			<groupId>org.springframework.security</groupId>
-			<artifactId>spring-security-core</artifactId>
-			<version>${spring.security.version}</version>
-		</dependency>
-
-		<dependency>
-			<groupId>org.springframework.security</groupId>
-			<artifactId>spring-security-web</artifactId>
-			<version>${spring.security.version}</version>
-		</dependency>
-
-		<dependency>
-			<groupId>org.springframework.security</groupId>
-			<artifactId>spring-security-acl</artifactId>
-			<version>${spring.security.version}</version>
-		</dependency>
-
-		<dependency>
-			<groupId>org.springframework.security</groupId>
-			<artifactId>spring-security-config</artifactId>
-			<version>${spring.security.version}</version>
-		</dependency>
-
-		<!-- OAuth 2.0 dependencies -->
-		<dependency>
-			<groupId>org.springframework.security.oauth</groupId>
-			<artifactId>spring-security-oauth2</artifactId>
-			<version>${oauth2.version}</version>
-		</dependency>
-
 		<!-- Base64 Commons Codec (Required, apparently) -->
 		<dependency>
 			<groupId>commons-codec</groupId>
@@ -185,6 +153,19 @@
 			<version>9.4-1200-jdbc41</version>
 		</dependency>
 
+		<!-- Utils for CORS filter declared in web.xml -->
+		<dependency>
+			<groupId>com.thetransactioncompany</groupId>
+			<artifactId>cors-filter</artifactId>
+			<version>2.4</version>
+		</dependency>
+
+		<dependency>
+			<groupId>com.thetransactioncompany</groupId>
+			<artifactId>java-property-utils</artifactId>
+			<version>1.7.1</version>
+		</dependency>
+
 	</dependencies>
 
 	<build>
@@ -200,44 +181,7 @@
 				</configuration>
 			</plugin>
 
-			<!-- Because Heroku is a special snowflake -->
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-dependency-plugin</artifactId>
-				<version>2.4</version>
-				<executions>
-					<execution>
-						<phase>package</phase>
-						<goals>
-							<goal>copy</goal>
-						</goals>
-						<configuration>
-							<artifactItems>
-								<artifactItem>
-									<groupId>com.github.jsimone</groupId>
-									<artifactId>webapp-runner</artifactId>
-									<version>7.0.57.2</version>
-									<destFileName>webapp-runner.jar</destFileName>
-								</artifactItem>
-							</artifactItems>
-						</configuration>
-					</execution>
-				</executions>
-			</plugin>
-
 		</plugins>
-
-		<!-- Informing Maven to include the Heroku webapp-runner HTTPS redirect 
-			file -->
-		<resources>
-			<resource>
-				<directory>${basedir}/src/main/webapp/WEB-INF</directory>
-				<includes>
-					<include>context.xml</include>
-				</includes>
-				<targetPath>${project.build.directory}/dependency</targetPath>
-			</resource>
-		</resources>
 
 	</build>
 
