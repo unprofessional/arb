@@ -67,9 +67,9 @@ public class MainController {
 		System.out.println("POST /question reached");
 		
 		String event = "OK";
-		String data = "You have posted: ";
+		Object data = "You have posted: ";
 		
-		data += questionRequest;
+		//data = questionRequest;
 		
 		return new JsonResponse(event, data);
 	}
