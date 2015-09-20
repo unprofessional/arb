@@ -1,6 +1,13 @@
 package com.devcru.arb.controllers;
 
+import java.io.ByteArrayOutputStream;
+import java.io.ObjectOutputStream;
+
 import javax.sql.DataSource;
+
+
+
+
 
 //import org.codehaus.jackson.annotate.JsonIgnoreProperties;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,8 +21,10 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.devcru.arb.dao.Dao;
 import com.devcru.arb.objects.Answer;
+import com.devcru.arb.objects.AnswerWrapper;
 import com.devcru.arb.objects.JsonResponse;
 import com.devcru.arb.objects.Question;
+import com.devcru.arb.objects.QuestionWrapper;
 
 // XXX THEORY XXX:
 // We could separate "questions" from "answers" to each their own controllers...
@@ -46,15 +55,26 @@ public class MainController {
 		String event = "OK";
 		String data = "question GET success";
 		
+		Question question = new Question();
+		
+		String serializedObject = "";
+		serializedObject = serializeObject(question);
+		
+		if(serializedObject != null) {
+			data = serializedObject;
+		}
+		
 		return new JsonResponse(event, data);
 	}
 	
 	@RequestMapping(value="/question", method=RequestMethod.POST)
 	// FIXME: headers="content-type=application/json" or produces="application/json"
 	public @ResponseBody
-	JsonResponse postQuestion(@RequestBody Question question) {
+	JsonResponse postQuestion(@RequestBody QuestionWrapper questionWrapper) {
 		String event = "OK";
 		String data = "question POST success";
+		
+		Question question = questionWrapper.getQuestion();
 		
 		return new JsonResponse(event, data);
 	}
@@ -73,11 +93,30 @@ public class MainController {
 	
 	@RequestMapping(value="/answer", method=RequestMethod.POST)
 	public @ResponseBody
-	JsonResponse getAnswer(@RequestBody Answer answer) {
+	JsonResponse getAnswer(@RequestBody AnswerWrapper answerWrapper) {
 		String event = "OK";
 		String data = "answer POST success";
 		
+		Answer answer = answerWrapper.getAnswer();
+		
 		return new JsonResponse(event, data);
+	}
+	
+	// Helper method (move to utils?)
+	public static String serializeObject(Object object) {
+		String serializedObject = "";
+		
+		try {
+		     ByteArrayOutputStream bo = new ByteArrayOutputStream();
+		     ObjectOutputStream so = new ObjectOutputStream(bo);
+		     so.writeObject(object);
+		     so.flush();
+		     serializedObject = bo.toString();
+		 } catch (Exception e) {
+		     System.out.println(e);
+		 }
+		
+		return serializedObject;
 	}
 	
 }
