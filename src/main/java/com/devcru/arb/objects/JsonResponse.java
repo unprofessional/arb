@@ -3,11 +3,11 @@ package com.devcru.arb.objects;
 public class JsonResponse {
 
 	private String status = "";
-	private String errorMessage = "";
+	private String message = "";
 
-	public JsonResponse(String status, String errorMessage) {
+	public JsonResponse(String status, String message) {
 		this.setStatus(status);
-		this.setErrorMessage(errorMessage);
+		this.setMessage(message);
 	}
 
 	public String getStatus() {
@@ -18,12 +18,12 @@ public class JsonResponse {
 		this.status = status;
 	}
 
-	public String getErrorMessage() {
-		return errorMessage;
+	public String getMessage() {
+		return message;
 	}
 
-	public void setErrorMessage(String errorMessage) {
-		this.errorMessage = errorMessage;
+	public void setMessage(String message) {
+		this.message = message;
 	}
 	
 }
