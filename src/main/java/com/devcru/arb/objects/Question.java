@@ -4,6 +4,8 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 public class Question {
 
+	// Class is internal use, for RequestBody, use AskRequest
+	
 	@JsonProperty("id")
 	long id = 1L;
 	

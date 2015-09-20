@@ -2,6 +2,7 @@ package com.devcru.arb.controllers;
 
 import javax.sql.DataSource;
 
+
 //import org.codehaus.jackson.annotate.JsonIgnoreProperties;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -17,6 +18,7 @@ import com.devcru.arb.objects.Answer;
 import com.devcru.arb.objects.AnswerWrapper;
 import com.devcru.arb.objects.JsonResponse;
 import com.devcru.arb.objects.Question;
+import com.devcru.arb.objects.QuestionRequest;
 import com.devcru.arb.objects.QuestionWrapper;
 
 // XXX THEORY XXX:
@@ -60,12 +62,14 @@ public class MainController {
 	@RequestMapping(value="/question", method=RequestMethod.POST)
 	// FIXME: headers="content-type=application/json" or produces="application/json"
 	public @ResponseBody
-	JsonResponse postQuestion(@RequestBody Question question) {
+	JsonResponse postQuestion(@RequestBody QuestionRequest questionRequest) {
 		
 		System.out.println("POST /question reached");
 		
 		String event = "OK";
-		String data = "question POST success";
+		String data = "You have posted: ";
+		
+		data += questionRequest;
 		
 		return new JsonResponse(event, data);
 	}
