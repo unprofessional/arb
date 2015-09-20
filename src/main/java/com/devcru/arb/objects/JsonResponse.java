@@ -2,28 +2,28 @@ package com.devcru.arb.objects;
 
 public class JsonResponse {
 
-	private String status = "";
-	private String message = "";
+	private String event = "";
+	private String data = "";
 
-	public JsonResponse(String status, String message) {
-		this.setStatus(status);
-		this.setMessage(message);
+	public JsonResponse(String event, String data) {
+		this.setEvent(event);
+		this.setData(data);
 	}
 
-	public String getStatus() {
-		return status;
+	public String getEvent() {
+		return event;
 	}
 
-	public void setStatus(String status) {
-		this.status = status;
+	public void setEvent(String event) {
+		this.event = event;
 	}
 
-	public String getMessage() {
-		return message;
+	public String getData() {
+		return data;
 	}
 
-	public void setMessage(String message) {
-		this.message = message;
+	public void setData(String data) {
+		this.data = data;
 	}
 	
 }
