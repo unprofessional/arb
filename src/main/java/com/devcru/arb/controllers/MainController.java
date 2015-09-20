@@ -1,13 +1,6 @@
 package com.devcru.arb.controllers;
 
-import java.io.ByteArrayOutputStream;
-import java.io.ObjectOutputStream;
-
 import javax.sql.DataSource;
-
-
-
-
 
 //import org.codehaus.jackson.annotate.JsonIgnoreProperties;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -53,16 +46,13 @@ public class MainController {
 	public @ResponseBody
 	JsonResponse getQuestion() {
 		String event = "OK";
-		String data = "question GET success";
+		Object data = "question GET success";
 		
-		Question question = new Question();
+		Question question = new Question(0); // sample id
+		QuestionWrapper questionWrapper = new QuestionWrapper();
+		questionWrapper.setQuestion(question);
 		
-		String serializedObject = "";
-		serializedObject = serializeObject(question);
-		
-		if(serializedObject != null) {
-			data = serializedObject;
-		}
+		data = questionWrapper;
 		
 		return new JsonResponse(event, data);
 	}
@@ -71,6 +61,9 @@ public class MainController {
 	// FIXME: headers="content-type=application/json" or produces="application/json"
 	public @ResponseBody
 	JsonResponse postQuestion(@RequestBody QuestionWrapper questionWrapper) {
+		
+		System.out.println("POST /question reached");
+		
 		String event = "OK";
 		String data = "question POST success";
 		
@@ -100,23 +93,6 @@ public class MainController {
 		Answer answer = answerWrapper.getAnswer();
 		
 		return new JsonResponse(event, data);
-	}
-	
-	// Helper method (move to utils?)
-	public static String serializeObject(Object object) {
-		String serializedObject = "";
-		
-		try {
-		     ByteArrayOutputStream bo = new ByteArrayOutputStream();
-		     ObjectOutputStream so = new ObjectOutputStream(bo);
-		     so.writeObject(object);
-		     so.flush();
-		     serializedObject = bo.toString();
-		 } catch (Exception e) {
-		     System.out.println(e);
-		 }
-		
-		return serializedObject;
 	}
 	
 }

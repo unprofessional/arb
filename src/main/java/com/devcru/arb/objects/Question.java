@@ -1,16 +1,21 @@
 package com.devcru.arb.objects;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 public class Question {
+
+	@JsonProperty("id")
+	long id = 1L;
 	
-	long id = -1;
-	String text = "";
+	@JsonProperty("text")
+	String text = "Hello World";
+	
+	public Question(long id) {
+		this.id = id;
+	}
 	
 	public long getId() {
 		return id;
-	}
-	
-	public void setId(long id) {
-		this.id = id;
 	}
 	
 	public String getText() {
