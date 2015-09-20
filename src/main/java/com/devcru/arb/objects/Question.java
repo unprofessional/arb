@@ -5,18 +5,18 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 public class Question {
 
 	//@JsonProperty("id")
-	long id = 1L;
+	//long id = 1L;
 	
 	@JsonProperty("text")
 	String text = "Hello World";
 	
-	public Question(long id) {
-		this.id = id;
-	}
-	
-	public long getId() {
-		return id;
-	}
+//	public Question(long id) {
+//		this.id = id;
+//	}
+//	
+//	public long getId() {
+//		return id;
+//	}
 	
 	public String getText() {
 		return text;
