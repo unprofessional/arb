@@ -5,14 +5,14 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 public class QuestionWrapper {
 	
 	@JsonProperty("question")
-	Question question;
+	QuestionRequest questionRequest;
 
-	public Question getQuestion() {
-		return question;
+	public QuestionRequest getQuestionRequest() {
+		return questionRequest;
 	}
 
-	public void setQuestion(Question question) {
-		this.question = question;
+	public void setQuestionRequest(QuestionRequest questionRequest) {
+		this.questionRequest = questionRequest;
 	}
 
 }

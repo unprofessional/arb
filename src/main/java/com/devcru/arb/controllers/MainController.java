@@ -50,9 +50,9 @@ public class MainController {
 		String event = "OK";
 		Object data = "question GET success";
 		
-		Question question = new Question(0); // sample id
+		QuestionRequest questionRequest = new QuestionRequest();
 		QuestionWrapper questionWrapper = new QuestionWrapper();
-		questionWrapper.setQuestion(question);
+		questionWrapper.setQuestionRequest(questionRequest);
 		
 		data = questionWrapper;
 		
@@ -62,14 +62,14 @@ public class MainController {
 	@RequestMapping(value="/question", method=RequestMethod.POST)
 	// FIXME: headers="content-type=application/json" or produces="application/json"
 	public @ResponseBody
-	JsonResponse postQuestion(@RequestBody QuestionRequest questionRequest) {
+	JsonResponse postQuestion(@RequestBody QuestionWrapper questionWrapper) {
 		
 		System.out.println("POST /question reached");
 		
 		String event = "OK";
 		Object data = "You have posted: ";
 		
-		data = questionRequest;
+		data = questionWrapper;
 		
 		return new JsonResponse(event, data);
 	}
