@@ -60,14 +60,12 @@ public class MainController {
 	@RequestMapping(value="/question", method=RequestMethod.POST)
 	// FIXME: headers="content-type=application/json" or produces="application/json"
 	public @ResponseBody
-	JsonResponse postQuestion(@RequestBody QuestionWrapper questionWrapper) {
+	JsonResponse postQuestion(@RequestBody Question question) {
 		
 		System.out.println("POST /question reached");
 		
 		String event = "OK";
 		String data = "question POST success";
-		
-		Question question = questionWrapper.getQuestion();
 		
 		return new JsonResponse(event, data);
 	}
