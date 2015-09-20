@@ -43,20 +43,20 @@ public class MainController {
 	@RequestMapping(value="/question", method=RequestMethod.GET)
 	public @ResponseBody
 	JsonResponse getQuestion() {
-		String key = "OK";
-		String message = "question GET success";
+		String event = "OK";
+		String data = "question GET success";
 		
-		return new JsonResponse(key, message);
+		return new JsonResponse(event, data);
 	}
 	
 	@RequestMapping(value="/question", method=RequestMethod.POST)
 	// FIXME: headers="content-type=application/json" or produces="application/json"
 	public @ResponseBody
 	JsonResponse postQuestion(@RequestBody Question question) {
-		String key = "OK";
-		String message = "question POST success";
+		String event = "OK";
+		String data = "question POST success";
 		
-		return new JsonResponse(key, message);
+		return new JsonResponse(event, data);
 	}
 	
 	// ANSWERS
@@ -65,19 +65,19 @@ public class MainController {
 	@RequestMapping(value="/answer", method=RequestMethod.GET)
 	public @ResponseBody
 	JsonResponse getAnswer() {
-		String key = "OK";
-		String message = "answer GET success";
+		String event = "OK";
+		String data = "answer GET success";
 		
-		return new JsonResponse(key, message);
+		return new JsonResponse(event, data);
 	}
 	
 	@RequestMapping(value="/answer", method=RequestMethod.POST)
 	public @ResponseBody
 	JsonResponse getAnswer(@RequestBody Answer answer) {
-		String key = "OK";
-		String message = "answer POST success";
+		String event = "OK";
+		String data = "answer POST success";
 		
-		return new JsonResponse(key, message);
+		return new JsonResponse(event, data);
 	}
 	
 }
