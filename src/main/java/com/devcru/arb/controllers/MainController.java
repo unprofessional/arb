@@ -3,6 +3,7 @@ package com.devcru.arb.controllers;
 import javax.sql.DataSource;
 
 
+
 //import org.codehaus.jackson.annotate.JsonIgnoreProperties;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -19,6 +20,7 @@ import com.devcru.arb.objects.AnswerWrapper;
 import com.devcru.arb.objects.JsonResponse;
 import com.devcru.arb.objects.Question;
 import com.devcru.arb.objects.QuestionRequest;
+import com.devcru.arb.objects.QuestionReqWrapper;
 import com.devcru.arb.objects.QuestionWrapper;
 
 // XXX THEORY XXX:
@@ -51,7 +53,7 @@ public class MainController {
 		Object data = "question GET success";
 		
 		QuestionRequest questionRequest = new QuestionRequest();
-		QuestionWrapper questionWrapper = new QuestionWrapper();
+		QuestionReqWrapper questionWrapper = new QuestionReqWrapper();
 		questionWrapper.setQuestionRequest(questionRequest);
 		
 		data = questionWrapper;
@@ -62,14 +64,24 @@ public class MainController {
 	@RequestMapping(value="/question", method=RequestMethod.POST)
 	// FIXME: headers="content-type=application/json" or produces="application/json"
 	public @ResponseBody
-	JsonResponse postQuestion(@RequestBody QuestionWrapper questionWrapper) {
+	JsonResponse postQuestion(@RequestBody QuestionReqWrapper questionReqWrapper) {
 		
 		System.out.println("POST /question reached");
 		
 		String event = "OK";
 		Object data = "You have posted: ";
 		
+		data = questionReqWrapper;
+		
+		Question question = new Question(0);
+		question.setText(questionReqWrapper.getQuestionRequest().getText());
+		
+		QuestionWrapper questionWrapper = new QuestionWrapper();
+		questionWrapper.setQuestion(question);
+		
 		data = questionWrapper;
+		
+		// TODO: Store question
 		
 		return new JsonResponse(event, data);
 	}

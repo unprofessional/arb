@@ -2,7 +2,10 @@ package com.devcru.arb.objects;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-public class QuestionWrapper {
+public class QuestionReqWrapper {
+	
+	@JsonProperty("id")
+	long id = 1L;
 	
 	@JsonProperty("question")
 	QuestionRequest questionRequest;
