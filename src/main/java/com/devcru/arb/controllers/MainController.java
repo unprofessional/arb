@@ -69,9 +69,9 @@ public class MainController {
 		String event = "OK";
 		Object data = "You have posted: ";
 		
-		//data = questionRequest;
+		data = questionRequest;
 		
-		return new JsonResponse(event, data);
+		return new JsonResponse(event, "POST Request Body: " + data);
 	}
 	
 	// ANSWERS
