@@ -48,7 +48,7 @@ public class MainController {
 		String event = "OK";
 		Object data = "question GET success";
 		
-		Question question = new Question(); // sample id
+		Question question = new Question(0); // sample id
 		QuestionWrapper questionWrapper = new QuestionWrapper();
 		questionWrapper.setQuestion(question);
 		
