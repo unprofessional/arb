@@ -10,6 +10,10 @@ public class Question {
 	@JsonProperty("text")
 	String text = "Hello World";
 	
+	public Question(long id) {
+		this.id = id;
+	}
+	
 	public long getId() {
 		return id;
 	}
