@@ -71,7 +71,7 @@ public class MainController {
 		
 		data = questionRequest;
 		
-		return new JsonResponse(event, "POST Request Body: " + data);
+		return new JsonResponse(event, data);
 	}
 	
 	// ANSWERS
