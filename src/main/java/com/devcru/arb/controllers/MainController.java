@@ -2,13 +2,13 @@ package com.devcru.arb.controllers;
 
 import javax.sql.DataSource;
 
-
 import org.apache.log4j.Logger;
 //import org.codehaus.jackson.annotate.JsonIgnoreProperties;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -47,13 +47,30 @@ public class MainController {
 	// QUESTIONS
 	// XXX: Can create an endpoint that retrieves ALL questions via "/questions"
 	
-	@RequestMapping(value="/question", method=RequestMethod.GET)
+//	@RequestMapping(value="/question", method=RequestMethod.GET)
+//	public @ResponseBody
+//	JsonResponse getQuestion() {
+//		
+//		logger.info("GET /question reached");
+//		
+//		String event = "success";
+//		Object data = "";
+//		
+//		AskResponse askResponse = new AskResponse();
+//		
+//		data = askResponse;
+//		
+//		return new JsonResponse(event, data);
+//	}
+	
+	@RequestMapping(value="/question/{latitude}/{longitude}", method=RequestMethod.GET)
 	public @ResponseBody
-	JsonResponse getQuestion() {
+	JsonResponse getQuestionByCoords(@PathVariable("latitude") double latitude,
+			@PathVariable("longitude") double longitude) {
 		
-		logger.info("GET /question reached");
+		logger.info("GET /question (by coordinates) reached");
 		
-		String event = "OK";
+		String event = "success";
 		Object data = "";
 		
 		AskResponse askResponse = new AskResponse();
@@ -70,7 +87,7 @@ public class MainController {
 		
 		logger.info("POST /question reached");
 		
-		String event = "OK";
+		String event = "success";
 		Object data = "";
 		
 		Question question = new Question(0); // This is where the id is assigned
@@ -91,11 +108,14 @@ public class MainController {
 	// ANSWERS
 	// XXX: Can create an endpoint that retrieves ALL questions via "/answers"
 	
-	@RequestMapping(value="/answer", method=RequestMethod.GET)
+	@RequestMapping(value="/answer/{qid}", method=RequestMethod.GET)
 	public @ResponseBody
-	JsonResponse getAnswer() {
-		String event = "OK";
-		Object data = "answer GET success";
+	JsonResponse getAnswer(@PathVariable("qid") double qid) {
+		
+		logger.info("GET /answer (by qid) reached");
+		
+		String event = "success";
+		Object data = "answer GET ";
 		
 		AnswerResponse answerResponse = new AnswerResponse();
 		
@@ -107,8 +127,11 @@ public class MainController {
 	@RequestMapping(value="/answer", method=RequestMethod.POST)
 	public @ResponseBody
 	JsonResponse getAnswer(@RequestBody AnswerRequest answerRequest) {
-		String event = "OK";
-		Object data = "answer POST success";
+		
+		logger.info("POST /answer reached");
+		
+		String event = "success";
+		Object data = "answer POST ";
 		
 		AnswerResponse answerResponse = new AnswerResponse();
 		//answerResponse.doSomething();
