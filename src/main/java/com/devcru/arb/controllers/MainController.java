@@ -2,6 +2,8 @@ package com.devcru.arb.controllers;
 
 import javax.sql.DataSource;
 
+
+import org.apache.log4j.Logger;
 //import org.codehaus.jackson.annotate.JsonIgnoreProperties;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -13,11 +15,12 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.devcru.arb.dao.Dao;
-import com.devcru.arb.objects.Answer;
+import com.devcru.arb.objects.AskRequest;
 import com.devcru.arb.objects.AskResponse;
+import com.devcru.arb.objects.AnswerRequest;
+import com.devcru.arb.objects.AnswerResponse;
 import com.devcru.arb.objects.JsonResponse;
 import com.devcru.arb.objects.Question;
-import com.devcru.arb.objects.AskRequest;
 
 // XXX THEORY XXX:
 // We could separate "questions" from "answers" to each their own controllers...
@@ -39,12 +42,17 @@ public class MainController {
 	@Qualifier("dataSource")
 	public void setDataSource(DataSource ds) { this.template = new JdbcTemplate(ds); }
 	
+	final static Logger logger = Logger.getLogger(MainController.class);
+	
 	// QUESTIONS
 	// XXX: Can create an endpoint that retrieves ALL questions via "/questions"
 	
 	@RequestMapping(value="/question", method=RequestMethod.GET)
 	public @ResponseBody
 	JsonResponse getQuestion() {
+		
+		logger.info("GET /question reached");
+		
 		String event = "OK";
 		Object data = "";
 		
@@ -60,7 +68,7 @@ public class MainController {
 	public @ResponseBody
 	JsonResponse postQuestion(@RequestBody AskRequest askRequest) {
 		
-		System.out.println("POST /question reached");
+		logger.info("POST /question reached");
 		
 		String event = "OK";
 		Object data = "";
@@ -87,18 +95,25 @@ public class MainController {
 	public @ResponseBody
 	JsonResponse getAnswer() {
 		String event = "OK";
-		String data = "answer GET success";
+		Object data = "answer GET success";
+		
+		AnswerResponse answerResponse = new AnswerResponse();
+		
+		data = answerResponse;
 		
 		return new JsonResponse(event, data);
 	}
 	
 	@RequestMapping(value="/answer", method=RequestMethod.POST)
 	public @ResponseBody
-	JsonResponse getAnswer(@RequestBody Answer answer) {
+	JsonResponse getAnswer(@RequestBody AnswerRequest answerRequest) {
 		String event = "OK";
-		String data = "answer POST success";
+		Object data = "answer POST success";
 		
-		//Answer answer = answerWrapper.getAnswer();
+		AnswerResponse answerResponse = new AnswerResponse();
+		//answerResponse.doSomething();
+		
+		data = answerResponse;
 		
 		return new JsonResponse(event, data);
 	}
