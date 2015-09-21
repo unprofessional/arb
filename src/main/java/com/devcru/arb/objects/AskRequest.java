@@ -1,6 +1,6 @@
 package com.devcru.arb.objects;
 
-public class QuestionRequest {
+public class AskRequest {
 	
 	String text = "";
 

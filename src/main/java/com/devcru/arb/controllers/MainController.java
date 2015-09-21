@@ -2,8 +2,6 @@ package com.devcru.arb.controllers;
 
 import javax.sql.DataSource;
 
-
-
 //import org.codehaus.jackson.annotate.JsonIgnoreProperties;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -16,12 +14,10 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.devcru.arb.dao.Dao;
 import com.devcru.arb.objects.Answer;
-import com.devcru.arb.objects.AnswerWrapper;
+import com.devcru.arb.objects.AskResponse;
 import com.devcru.arb.objects.JsonResponse;
 import com.devcru.arb.objects.Question;
-import com.devcru.arb.objects.QuestionRequest;
-import com.devcru.arb.objects.QuestionReqWrapper;
-import com.devcru.arb.objects.QuestionWrapper;
+import com.devcru.arb.objects.AskRequest;
 
 // XXX THEORY XXX:
 // We could separate "questions" from "answers" to each their own controllers...
@@ -52,11 +48,9 @@ public class MainController {
 		String event = "OK";
 		Object data = "question GET success";
 		
-		QuestionRequest questionRequest = new QuestionRequest();
-		QuestionReqWrapper questionWrapper = new QuestionReqWrapper();
-		questionWrapper.setQuestionRequest(questionRequest);
+		AskResponse askResponse = new AskResponse();
 		
-		data = questionWrapper;
+		data = askResponse;
 		
 		return new JsonResponse(event, data);
 	}
@@ -64,24 +58,24 @@ public class MainController {
 	@RequestMapping(value="/question", method=RequestMethod.POST)
 	// FIXME: headers="content-type=application/json" or produces="application/json"
 	public @ResponseBody
-	JsonResponse postQuestion(@RequestBody QuestionReqWrapper questionReqWrapper) {
+	JsonResponse postQuestion(@RequestBody AskRequest askRequest) {
 		
 		System.out.println("POST /question reached");
 		
 		String event = "OK";
 		Object data = "You have posted: ";
 		
-		data = questionReqWrapper;
+		long random = (long) Math.random();
 		
-		Question question = new Question(0);
-		question.setText(questionReqWrapper.getQuestionRequest().getText());
-		
-		QuestionWrapper questionWrapper = new QuestionWrapper();
-		questionWrapper.setQuestion(question);
-		
-		data = questionWrapper;
+		Question question = new Question(random); // This is where the id is assigned
+		question.setText(askRequest.getText());
 		
 		// TODO: Store question
+		
+		AskResponse askResponse = new AskResponse();
+		askResponse.setId(question.getId());
+		
+		data = askResponse;
 		
 		return new JsonResponse(event, data);
 	}
@@ -100,11 +94,11 @@ public class MainController {
 	
 	@RequestMapping(value="/answer", method=RequestMethod.POST)
 	public @ResponseBody
-	JsonResponse getAnswer(@RequestBody AnswerWrapper answerWrapper) {
+	JsonResponse getAnswer(@RequestBody Answer answer) {
 		String event = "OK";
 		String data = "answer POST success";
 		
-		Answer answer = answerWrapper.getAnswer();
+		//Answer answer = answerWrapper.getAnswer();
 		
 		return new JsonResponse(event, data);
 	}
