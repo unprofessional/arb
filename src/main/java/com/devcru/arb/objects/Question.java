@@ -12,6 +12,12 @@ public class Question {
 	@JsonProperty("text")
 	String text = "Hello World";
 	
+	@JsonProperty("latitude")
+	double latitude;
+	
+	@JsonProperty("longitude")
+	double longitude;
+	
 	public Question(long id) {
 		this.id = id;
 	}
@@ -26,6 +32,22 @@ public class Question {
 	
 	public void setText(String text) {
 		this.text = text;
+	}
+
+	public double getLatitude() {
+		return latitude;
+	}
+
+	public void setLatitude(double latitude) {
+		this.latitude = latitude;
+	}
+
+	public double getLongitude() {
+		return longitude;
+	}
+
+	public void setLongitude(double longitude) {
+		this.longitude = longitude;
 	}
 
 }

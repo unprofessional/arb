@@ -46,7 +46,7 @@ public class MainController {
 	public @ResponseBody
 	JsonResponse getQuestion() {
 		String event = "OK";
-		Object data = "question GET success";
+		Object data = "";
 		
 		AskResponse askResponse = new AskResponse();
 		
@@ -63,11 +63,9 @@ public class MainController {
 		System.out.println("POST /question reached");
 		
 		String event = "OK";
-		Object data = "You have posted: ";
+		Object data = "";
 		
-		long random = (long) Math.random();
-		
-		Question question = new Question(random); // This is where the id is assigned
+		Question question = new Question(0); // This is where the id is assigned
 		question.setText(askRequest.getText());
 		
 		// TODO: Store question
