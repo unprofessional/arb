@@ -67,6 +67,8 @@ public class MainController {
 		
 		Question question = new Question(0); // This is where the id is assigned
 		question.setText(askRequest.getText());
+		question.setLatitude(askRequest.getLatitude());
+		question.setLongitude(askRequest.getLongitude());
 		
 		// TODO: Store question
 		
