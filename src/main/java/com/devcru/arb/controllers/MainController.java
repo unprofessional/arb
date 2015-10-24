@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.devcru.arb.dao.Dao;
+import com.devcru.arb.geostorage.QuestionStorage;
 import com.devcru.arb.objects.AskRequest;
 import com.devcru.arb.objects.AskResponse;
 import com.devcru.arb.objects.AnswerRequest;
@@ -43,6 +44,8 @@ public class MainController {
 	public void setDataSource(DataSource ds) { this.template = new JdbcTemplate(ds); }
 	
 	final static Logger logger = Logger.getLogger(MainController.class);
+	
+	double searchRadius = 0.001;
 	
 	// QUESTIONS
 	// XXX: Can create an endpoint that retrieves ALL questions via "/questions"
@@ -73,6 +76,14 @@ public class MainController {
 		String event = "success";
 		Object data = "";
 		
+		// TODO: Fetch question
+		
+		QuestionStorage qs = new QuestionStorage();
+		QuestionStorage.Question q = (QuestionStorage.Question) qs.findRandom(
+				Math.random(),
+				Math.random(), searchRadius);
+		// TODO: Investigate the need to use QuestionStorage's inner Question class
+		
 		AskResponse askResponse = new AskResponse();
 		
 		data = askResponse;
@@ -95,7 +106,15 @@ public class MainController {
 		question.setLatitude(askRequest.getLatitude());
 		question.setLongitude(askRequest.getLongitude());
 		
+		String text = question.getText();
+		double longitude = question.getLongitude();
+		double latitude = question.getLatitude();
+		
 		// TODO: Store question
+		
+		QuestionStorage qs = new QuestionStorage();
+		qs.putNext(qs.new Question(text, longitude, latitude));
+		// TODO: Investigate the need to use QuestionStorage's inner Question class
 		
 		AskResponse askResponse = new AskResponse();
 		askResponse.setId(question.getId());
@@ -116,6 +135,8 @@ public class MainController {
 		
 		String event = "success";
 		Object data = "answer GET ";
+		
+		// TODO: Fetch random question
 		
 		AnswerResponse answerResponse = new AnswerResponse();
 		
