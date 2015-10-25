@@ -4,23 +4,23 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 public class JsonResponse {
 
-	@JsonProperty("event")
-	private String event = "";
+	@JsonProperty("status")
+	private String status = "";
 	
 	@JsonProperty("data")
 	private Object data;
 
-	public JsonResponse(String event, Object data) {
-		this.setEvent(event);
+	public JsonResponse(String status, Object data) {
+		this.setStatus(status);
 		this.setData(data);
 	}
 
-	public String getEvent() {
-		return event;
+	public String getStatus() {
+		return status;
 	}
 
-	public void setEvent(String event) {
-		this.event = event;
+	public void setStatus(String status) {
+		this.status = status;
 	}
 
 	public Object getData() {

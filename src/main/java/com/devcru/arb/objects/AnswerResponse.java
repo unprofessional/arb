@@ -1,5 +1,12 @@
 package com.devcru.arb.objects;
 
-public class AnswerResponse {
+import com.fasterxml.jackson.annotation.JsonProperty;
 
+public class AnswerResponse {
+	@JsonProperty("answer")
+	private String answer;
+	
+	public AnswerResponse(String text) {
+		answer = text;
+	}
 }
