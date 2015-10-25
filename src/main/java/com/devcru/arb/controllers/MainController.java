@@ -116,20 +116,17 @@ public class MainController {
 		String status = "success";
 		Object data = "";
 		
-		Question question = new Question(0); // This is where the id is assigned
-		question.setText(askRequest.getText());
-		question.setLatitude(askRequest.getLatitude());
-		question.setLongitude(askRequest.getLongitude());
-		
-		String text = question.getText();
-		double latitude = question.getLatitude();
-		double longitude = question.getLongitude();
-		
-		// TODO: Store question
+		String text = askRequest.getText();
+		double latitude = askRequest.getLatitude();
+		double longitude = askRequest.getLongitude();
 
 		QuestionStorage qs = QuestionStorage.getInstance();
-		qs.putNext(qs.new Question(text, latitude, longitude));
-		// TODO: Investigate the need to use QuestionStorage's inner Question class
+		int key = qs.putNext(qs.new Question(text, latitude, longitude));
+
+		Question question = new Question(key); // This is where the id is assigned
+		question.setText(text);
+		question.setLatitude(latitude);
+		question.setLongitude(longitude);
 		
 		AskResponse askResponse = new AskResponse();
 		askResponse.setId(question.getId());
