@@ -55,10 +55,11 @@ public class QuestionStorage extends GeoStorage<Integer>
 		System.out.println("[QS] Inserted question [key="+key+"]");
 	}
 	public Integer putNext(DataPoint value) {
-		super.put(nextKey, value);
+		Integer key = nextKey;
+		super.put(key, value);
 		System.out.println("[QS] Inserted question [key="+nextKey+"]");
 		findNextKey();
-		return nextKey;
+		return key;
 	}
 	public void remove(Integer key) {
 		super.remove(key);

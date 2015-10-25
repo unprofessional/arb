@@ -151,6 +151,8 @@ public class MainController {
 		QuestionStorage qs = QuestionStorage.getInstance();
 		QuestionStorage.Question q = qs.get((int)qid);
 		
+		logger.info("URL qid: " + qid);
+		
 		if (q != null) {
 			String answer = q.getAnswer();
 			if (answer != null) {
