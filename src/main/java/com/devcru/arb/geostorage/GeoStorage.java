@@ -2,6 +2,7 @@ package com.devcru.arb.geostorage;
 
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.Map.Entry;
 
 public class GeoStorage<K>
 {
@@ -74,6 +75,16 @@ public class GeoStorage<K>
 		quadtree.removePoint(value);
 		it.remove();
 		value.key = null;
+	}
+	public void clear() {
+		Iterator<Entry<K, DataPoint>> it = data.entrySet().iterator();
+		while (it.hasNext()) {
+			Entry<K, DataPoint> entry = it.next();
+			DataPoint value = entry.getValue();
+			value.key = null;
+		}
+		data.clear();
+		quadtree.clearPoints();
 	}
 	public DataPoint get(K key) {
 		return data.get(key);

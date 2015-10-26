@@ -1,5 +1,7 @@
 package com.devcru.arb.controllers;
 
+import java.util.HashMap;
+
 import javax.sql.DataSource;
 
 import org.apache.log4j.Logger;
@@ -15,12 +17,12 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.devcru.arb.dao.Dao;
+import com.devcru.arb.geostorage.GeoStorage.DataPoint;
 import com.devcru.arb.geostorage.QuestionStorage;
 import com.devcru.arb.objects.AskRequest;
 import com.devcru.arb.objects.AskResponse;
 import com.devcru.arb.objects.AnswerRequest;
 import com.devcru.arb.objects.AnswerResponse;
-import com.devcru.arb.objects.JSONTTempQWrapper;
 import com.devcru.arb.objects.JsonResponse;
 import com.devcru.arb.objects.Question;
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -121,7 +123,7 @@ public class MainController {
 		double longitude = askRequest.getLongitude();
 
 		QuestionStorage qs = QuestionStorage.getInstance();
-		int key = qs.putNext(qs.new Question(text, latitude, longitude));
+		long key = qs.putNext(qs.new Question(text, latitude, longitude));
 
 		Question question = new Question(key); // This is where the id is assigned
 		question.setText(text);
@@ -149,7 +151,7 @@ public class MainController {
 		Object data;
 		
 		QuestionStorage qs = QuestionStorage.getInstance();
-		QuestionStorage.Question q = qs.get((int)qid);
+		QuestionStorage.Question q = qs.get(qid);
 		
 		logger.info("URL qid: " + qid);
 		
@@ -188,7 +190,7 @@ public class MainController {
 		Object data;
 		
 		QuestionStorage qs = QuestionStorage.getInstance();
-		QuestionStorage.Question q = qs.get((int)answerRequest.getQuestionId());
+		QuestionStorage.Question q = qs.get(answerRequest.getQuestionId());
 		
 		if (q != null) {
 			if (q.getAnswer() == null) {
@@ -218,5 +220,36 @@ public class MainController {
 		
 		return new JsonResponse(status, data);
 	}
-	
+
+	@RequestMapping(value="/qs/{operation}", method=RequestMethod.GET)
+	public @ResponseBody
+	JsonResponse qsControl(@PathVariable String operation) {
+		
+		logger.info("GET /qs reached");
+		
+		QuestionStorage qs = QuestionStorage.getInstance();
+		
+		if ("size".equals(operation)) {
+			return new JsonResponse("success", "[QS]"
+				+"\n Data Size: "+qs.getData().size()
+				+"\n Quadtree Root Size: "+qs.getQuadtree().getRoot().getNumDataPoints()
+				+"\n Quadtree Root Points: "+qs.getQuadtree().getRoot().getDataPoints().size()
+			);
+		}
+		else if ("clear".equals(operation)) {
+			qs.clear();
+			return new JsonResponse("success", "[QS] Cleared.");
+		}
+		else if ("write".equals(operation)) {
+			qs.writeToFile();
+			return new JsonResponse("success", "[QS] Written to file. Size: "+qs.getData().size());
+		}
+		else if ("read".equals(operation)) {
+			qs.readFromFile();
+			return new JsonResponse("success", "[QS] Read from file. Size: "+qs.getData().size());
+		}
+		else {
+			return new JsonResponse("error", "Must follow format: /qs/{operation = read|write|clear|...}");
+		}
+	}
 }

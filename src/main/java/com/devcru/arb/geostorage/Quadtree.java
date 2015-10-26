@@ -150,6 +150,26 @@ public class Quadtree
 			}
 			return false;
 		}
+		public void clearPoints() {
+			Node n = this;
+			int num = this.dataPoints.size();
+			while (n != null) {
+				n.numDataPoints -= num;
+				n = n.parent;
+			}
+			this.dataPoints.clear();
+
+			if (children != null) {
+				for (int i=0; i<4; i++) {
+					n = children[i];
+					n.clearPoints();
+				}
+			}
+			
+			if (parent != null) {
+				parent.testMerge();
+			}
+		}
 
 		public ArrayList<DataPoint> getDataPoints() {
 			return dataPoints;
@@ -186,6 +206,9 @@ public class Quadtree
 		if (p.parentNode != null) {
 			p.parentNode.removePoint(p);
 		}
+	}
+	public void clearPoints() {
+		root.clearPoints();
 	}
 	
 	public Node getRoot() {

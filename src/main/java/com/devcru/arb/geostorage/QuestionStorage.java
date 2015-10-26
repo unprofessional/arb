@@ -1,13 +1,16 @@
 package com.devcru.arb.geostorage;
 
-import java.io.DataOutputStream;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
+import java.io.File;
+import java.io.FileWriter;
 import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.Map;
 import java.util.Map.Entry;
 
-public class QuestionStorage extends GeoStorage<Integer>  {
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+
+public class QuestionStorage extends GeoStorage<Long>  {
 	
 	private static QuestionStorage instance = null;
 	public static QuestionStorage getInstance() {
@@ -15,7 +18,7 @@ public class QuestionStorage extends GeoStorage<Integer>  {
 		return instance;
 	}
 	
-	public class Question extends GeoStorage<Integer>.DataPoint
+	public class Question extends GeoStorage<Long>.DataPoint
 	{
 		String text;
 		String answer = null;
@@ -35,7 +38,7 @@ public class QuestionStorage extends GeoStorage<Integer>  {
 		}
 	}
 	
-	private Integer nextKey = 0;
+	private Long nextKey = 0L;
 	
 	public QuestionStorage() {
 		System.out.println("[QS] Instance created.");
@@ -47,10 +50,10 @@ public class QuestionStorage extends GeoStorage<Integer>  {
 		} while (this.get(nextKey) != null);
 		
 	}
-	public Integer getNextKey() {
+	public Long getNextKey() {
 		return nextKey;
 	}
-	public void put(Integer key, DataPoint value) {
+	public void put(Long key, DataPoint value) {
 		super.put(key, value);
 		
 		if (key.equals(nextKey)) {
@@ -59,19 +62,24 @@ public class QuestionStorage extends GeoStorage<Integer>  {
 		}
 		System.out.println("[QS] Inserted question [key="+key+"]");
 	}
-	public Integer putNext(DataPoint value) {
-		Integer key = nextKey;
+	public Long putNext(DataPoint value) {
+		Long key = nextKey;
 		super.put(key, value);
 		System.out.println("[QS] Inserted question [key="+nextKey+"]");
 		findNextKey();
 		return key;
 	}
-	public void remove(Integer key) {
+	public void remove(Long key) {
 		super.remove(key);
 		System.out.println("[QS] Removed question [key="+key+"]");
 	}
-	public Question get(Integer key) {
+	public Question get(Long key) {
 		return (Question) super.get(key);
+	}
+	public void clear() {
+		super.clear();
+		nextKey = 0L;
+		System.out.println("[QS] Cleared all questions.");
 	}
 	
 	private ArrayList<Quadtree.Node> getNodesInRange(double x, double y, double radius, Quadtree.Node node) {
@@ -134,24 +142,72 @@ public class QuestionStorage extends GeoStorage<Integer>  {
 		return null;
 	}
 	
-	public void writeToFile() throws FileNotFoundException {
+	public void writeToFile() {
 		try {
-			DataOutputStream out = new DataOutputStream(new FileOutputStream("stuff.txt"));
-			Iterator<Entry<Integer, DataPoint>> it = this.getData().entrySet().iterator();
-			out.writeBytes("{");
+			System.out.println("[QS] Writing to file.");
+			
+			FileWriter out = new FileWriter("QuestionStorage.json");
+			Iterator<Entry<Long, DataPoint>> it = this.getData().entrySet().iterator();
+			
+			final String quot = "\"";
+			
+			out.write("{");
 			while (it.hasNext()) {
-				Entry<Integer, DataPoint> entry = it.next();
-				Integer key = entry.getKey();
-				DataPoint value = entry.getValue();
-				out.writeBytes('"'+key+'"'+":"+'"'+value+'"');
-				if (it.hasNext()) out.writeBytes(",");
+				Entry<Long, DataPoint> entry = it.next();
+				Question q = (Question) entry.getValue();
+				Long key = entry.getKey();
+				String text = q.getText();
+				String answer = q.getAnswer();
+				double lat = q.getLatitude();
+				double lon = q.getLongitude();
+				
+				out.write(quot+key+quot+":"+"{");
+				out.write(quot+     "text"+quot+":"+quot+text+quot                                +",");
+				out.write(quot+   "answer"+quot+":"+(answer == null ? "null" : (quot+answer+quot))+",");
+				out.write(quot+ "latitude"+quot+":"+lat                                           +",");
+				out.write(quot+"longitude"+quot+":"+lon);
+				out.write("}");
+				
+				if (it.hasNext()) out.write(",");
 			}
-			out.writeBytes("}");
+			out.write("}");
+			
+			out.flush();
 			out.close();
 		}
 		catch (Exception e) {
-			
+			e.printStackTrace();
 		}
 	}
-	
+	public void readFromFile() {
+		try {
+			System.out.println("[QS] Reading from file.");
+
+			this.clear();
+			
+			ObjectMapper mapper = new ObjectMapper();
+			JsonNode root = mapper.readTree(new File("QuestionStorage.json"));
+			
+			Iterator<Map.Entry<String, JsonNode>> it = root.fields();
+			while (it.hasNext()) {
+				Map.Entry<String, JsonNode> field = it.next();
+				
+				long key = Long.parseLong(field.getKey());
+				JsonNode child = field.getValue();
+				
+				String text = child.get("text").asText();
+				String answer = child.get("answer").asText(null);
+				double lat = child.get("latitude").asDouble(0.0);
+				double lon = child.get("longitude").asDouble(0.0);
+				
+				Question q = new Question(text, lat, lon);
+				q.setAnswer(answer);
+				
+				this.put(key, q);
+			}
+		}
+		catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
 }
