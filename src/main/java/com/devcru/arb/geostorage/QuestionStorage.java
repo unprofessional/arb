@@ -7,8 +7,6 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.Map.Entry;
 
-import com.devcru.arb.geostorage.GeoStorage.DataPoint;
-
 public class QuestionStorage extends GeoStorage<Integer>  {
 	
 	private static QuestionStorage instance = null;
