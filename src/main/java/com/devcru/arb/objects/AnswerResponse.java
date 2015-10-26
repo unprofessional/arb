@@ -6,7 +6,11 @@ public class AnswerResponse {
 	@JsonProperty("answer")
 	private String answer;
 	
-	public AnswerResponse(String text) {
+	@JsonProperty("distance")
+	private double distance;
+	
+	public AnswerResponse(String text, double dist) {
 		answer = text;
+		distance = dist;
 	}
 }

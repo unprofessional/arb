@@ -10,20 +10,22 @@ public class AnswerRequest {
 	@JsonProperty("text")
 	String text = "";
 
+	@JsonProperty("latitude")
+	double latitude = 0.0;
+	
+	@JsonProperty("longitude")
+	double longitude = 0.0;
+	
 	public long getQuestionId() {
 		return questionId;
 	}
-
-	public void setQuestionId(long questionId) {
-		this.questionId = questionId;
-	}
-
 	public String getText() {
 		return text;
 	}
-
-	public void setText(String text) {
-		this.text = text;
+	public double getLatitude() {
+		return latitude;
 	}
-
+	public double getLongitude() {
+		return longitude;
+	}
 }

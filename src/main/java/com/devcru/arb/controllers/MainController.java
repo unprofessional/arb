@@ -1,7 +1,5 @@
 package com.devcru.arb.controllers;
 
-import java.util.HashMap;
-
 import javax.sql.DataSource;
 
 import org.apache.log4j.Logger;
@@ -17,14 +15,14 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.devcru.arb.dao.Dao;
-import com.devcru.arb.geostorage.GeoStorage.DataPoint;
+import com.devcru.arb.geostorage.GeoStorage;
 import com.devcru.arb.geostorage.QuestionStorage;
 import com.devcru.arb.objects.AskRequest;
 import com.devcru.arb.objects.AskResponse;
 import com.devcru.arb.objects.AnswerRequest;
 import com.devcru.arb.objects.AnswerResponse;
 import com.devcru.arb.objects.JsonResponse;
-import com.devcru.arb.objects.Question;
+import com.devcru.arb.objects.QuestionResponse;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 // XXX THEORY XXX:
@@ -49,7 +47,7 @@ public class MainController {
 	
 	final static Logger logger = Logger.getLogger(MainController.class);
 	
-	double searchRadius = 10000.0;
+	double searchRadius = 20.0;
 	
 	// QUESTIONS
 	// XXX: Can create an endpoint that retrieves ALL questions via "/questions"
@@ -97,12 +95,10 @@ public class MainController {
 		else {
 			String status = "success";
 			
-			//JSONTTempQWrapper jsonQ = new JSONTTempQWrapper();
-			Question qWrapper = new Question(q.getKey());
-			qWrapper.setLatitude(q.getLatitude());
-			qWrapper.setLongitude(q.getLongitude());
-			qWrapper.setText(q.getText());
-			//jsonQ.setQuestion(q);
+			final double dist = GeoStorage.getGeoDistance(
+				q.getLatitude(), q.getLongitude(),
+				latitude,		 longitude);
+			QuestionResponse qWrapper = new QuestionResponse(q.getKey(), q.getText(), dist);
 			
 			return new JsonResponse(status, qWrapper);
 		}
@@ -121,17 +117,12 @@ public class MainController {
 		String text = askRequest.getText();
 		double latitude = askRequest.getLatitude();
 		double longitude = askRequest.getLongitude();
-
+		
 		QuestionStorage qs = QuestionStorage.getInstance();
-		long key = qs.putNext(qs.new Question(text, latitude, longitude));
-
-		Question question = new Question(key); // This is where the id is assigned
-		question.setText(text);
-		question.setLatitude(latitude);
-		question.setLongitude(longitude);
+		QuestionStorage.Question q = qs.putNext(qs.new Question(text, latitude, longitude));
 		
 		AskResponse askResponse = new AskResponse();
-		askResponse.setId(question.getId());
+		askResponse.setId(q.getKey());
 		
 		data = askResponse;
 		
@@ -156,10 +147,14 @@ public class MainController {
 		logger.info("URL qid: " + qid);
 		
 		if (q != null) {
-			String answer = q.getAnswer();
+			QuestionStorage.Answer answer = q.getAnswer();
 			if (answer != null) {
 				status = "success";
-				data = new AnswerResponse(answer);
+
+				final double dist = GeoStorage.getGeoDistance(
+						 q.getLatitude(),	   q.getLongitude(),
+					answer.getLatitude(), answer.getLongitude());
+				data = new AnswerResponse(answer.getText(), dist);
 			}
 			else {
 				status = "not_answered";
@@ -194,7 +189,11 @@ public class MainController {
 		
 		if (q != null) {
 			if (q.getAnswer() == null) {
-				q.setAnswer(answerRequest.getText());
+				q.setAnswer(qs.new Answer(
+					answerRequest.getText(),
+					answerRequest.getLatitude(),
+					answerRequest.getLongitude()
+				));
 				
 				status = "success";
 				data = new Object() {

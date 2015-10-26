@@ -17,11 +17,11 @@ public class QuestionStorage extends GeoStorage<Long>  {
 		if (instance == null) instance = new QuestionStorage();
 		return instance;
 	}
-	
+
 	public class Question extends GeoStorage<Long>.DataPoint
 	{
 		String text;
-		String answer = null;
+		Answer answer = null;
 		
 		public Question(String text, double latitude, double longitude) {
 			super(latitude, longitude);
@@ -30,11 +30,33 @@ public class QuestionStorage extends GeoStorage<Long>  {
 		public String getText() {
 			return this.text;
 		}
-		public String getAnswer() {
+		public Answer getAnswer() {
 			return answer;
 		}
-		public void setAnswer(String text) {
-			answer = text;
+		public void setAnswer(Answer answer) {
+			this.answer = answer;
+		}
+	}
+	
+	public class Answer
+	{
+		String text;
+		double latitude;
+		double longitude;
+		
+		public Answer(String text, double latitude, double longitude) {
+			this.text = text;
+			this.latitude = latitude;
+			this.longitude = longitude;
+		}
+		public String getText() {
+			return text;
+		}
+		public double getLatitude() {
+			return latitude;
+		}
+		public double getLongitude() {
+			return longitude;
 		}
 	}
 	
@@ -48,7 +70,6 @@ public class QuestionStorage extends GeoStorage<Long>  {
 		do {
 			nextKey++;
 		} while (this.get(nextKey) != null);
-		
 	}
 	public Long getNextKey() {
 		return nextKey;
@@ -62,12 +83,12 @@ public class QuestionStorage extends GeoStorage<Long>  {
 		}
 		System.out.println("[QS] Inserted question [key="+key+"]");
 	}
-	public Long putNext(DataPoint value) {
+	public Question putNext(Question value) {
 		Long key = nextKey;
 		super.put(key, value);
 		System.out.println("[QS] Inserted question [key="+nextKey+"]");
 		findNextKey();
-		return key;
+		return value;
 	}
 	public void remove(Long key) {
 		super.remove(key);
@@ -157,15 +178,27 @@ public class QuestionStorage extends GeoStorage<Long>  {
 				Question q = (Question) entry.getValue();
 				Long key = entry.getKey();
 				String text = q.getText();
-				String answer = q.getAnswer();
 				double lat = q.getLatitude();
 				double lon = q.getLongitude();
+				Answer answer = q.getAnswer();
 				
 				out.write(quot+key+quot+":"+"{");
-				out.write(quot+     "text"+quot+":"+quot+text+quot                                +",");
-				out.write(quot+   "answer"+quot+":"+(answer == null ? "null" : (quot+answer+quot))+",");
-				out.write(quot+ "latitude"+quot+":"+lat                                           +",");
-				out.write(quot+"longitude"+quot+":"+lon);
+				
+				out.write(
+					 quot+"text"+quot+":"+quot+text+quot+","
+					+quot+ "lat"+quot+":"+lat+","
+					+quot+ "lon"+quot+":"+lon
+				);
+				if (answer != null) {
+					out.write(
+						quot+"answer"+quot+":{"
+							+quot+"text"+quot+":"+quot+answer.getText()+quot+","
+							+quot+ "lat"+quot+":"+answer.getLatitude()+","
+							+quot+ "lon"+quot+":"+answer.getLongitude()
+						+"}"
+					);
+				}
+				
 				out.write("}");
 				
 				if (it.hasNext()) out.write(",");
@@ -194,14 +227,21 @@ public class QuestionStorage extends GeoStorage<Long>  {
 				
 				long key = Long.parseLong(field.getKey());
 				JsonNode child = field.getValue();
+
+				Question q = new Question(
+					child.get("text").asText(),
+					child.get("lat").asDouble(0.0),
+					child.get("lon").asDouble(0.0)
+				);
 				
-				String text = child.get("text").asText();
-				String answer = child.get("answer").asText(null);
-				double lat = child.get("latitude").asDouble(0.0);
-				double lon = child.get("longitude").asDouble(0.0);
-				
-				Question q = new Question(text, lat, lon);
-				q.setAnswer(answer);
+				JsonNode ansNode = child.get("answer");
+				if (ansNode != null) {
+					q.setAnswer(new Answer(
+						ansNode.get("text").asText(),
+						ansNode.get("lat").asDouble(0.0),
+						ansNode.get("lon").asDouble(0.0)
+					));
+				}
 				
 				this.put(key, q);
 			}
