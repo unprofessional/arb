@@ -1,9 +1,16 @@
 package com.devcru.arb.geostorage;
 
+import java.io.DataOutputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.Map.Entry;
 
-public class QuestionStorage extends GeoStorage<Integer>
-{
+import com.devcru.arb.geostorage.GeoStorage.DataPoint;
+
+public class QuestionStorage extends GeoStorage<Integer>  {
+	
 	private static QuestionStorage instance = null;
 	public static QuestionStorage getInstance() {
 		if (instance == null) instance = new QuestionStorage();
@@ -128,4 +135,25 @@ public class QuestionStorage extends GeoStorage<Integer>
 		System.out.print("\n");
 		return null;
 	}
+	
+	public void writeToFile() throws FileNotFoundException {
+		try {
+			DataOutputStream out = new DataOutputStream(new FileOutputStream("stuff.txt"));
+			Iterator<Entry<Integer, DataPoint>> it = this.getData().entrySet().iterator();
+			out.writeBytes("{");
+			while (it.hasNext()) {
+				Entry<Integer, DataPoint> entry = it.next();
+				Integer key = entry.getKey();
+				DataPoint value = entry.getValue();
+				out.writeBytes('"'+key+'"'+":"+'"'+value+'"');
+				if (it.hasNext()) out.writeBytes(",");
+			}
+			out.writeBytes("}");
+			out.close();
+		}
+		catch (Exception e) {
+			
+		}
+	}
+	
 }
